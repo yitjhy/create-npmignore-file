@@ -53,13 +53,16 @@ const start = async () => {
     }
   ];
   const { env } = await inquirer.prompt(promptList);
-  console.log(env);
   if (env === '内网') {
     const httpPath = `${basePath}/.npmignore`;
     const writeInHttpFile = _.curry(writeInFile)(httpPath);
     _.compose(writeInHttpFile, getNpmIgnoreFileData)();
   } else {
-    fs.unlinkSync('./.npmignore');
+    fs.exists('./.npmignore', function (exists) {
+      if (exists) {
+        fs.unlinkSync('./.npmignore');
+      }
+    });
   }
 }
 
